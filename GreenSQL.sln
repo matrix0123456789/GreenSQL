@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenSQL", "GreenSQL\GreenSQL.csproj", "{7842E3F5-4CA9-43AE-8650-F3171660DA1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenSQLTests", "GreenSQLTests\GreenSQLTests.csproj", "{81E545C1-AA63-4969-A197-CDD830780666}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7842E3F5-4CA9-43AE-8650-F3171660DA1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7842E3F5-4CA9-43AE-8650-F3171660DA1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7842E3F5-4CA9-43AE-8650-F3171660DA1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7842E3F5-4CA9-43AE-8650-F3171660DA1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81E545C1-AA63-4969-A197-CDD830780666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81E545C1-AA63-4969-A197-CDD830780666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81E545C1-AA63-4969-A197-CDD830780666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81E545C1-AA63-4969-A197-CDD830780666}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
