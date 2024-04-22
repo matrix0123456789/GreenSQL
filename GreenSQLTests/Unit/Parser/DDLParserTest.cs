@@ -1,4 +1,5 @@
 ﻿using GreenSQL.Parser;
+using GreenSQL.SqlNodes;
 using GreenSQL.SqlNodes.Statement;
 
 namespace GreenSQLTests.Unit.Parser;
@@ -21,7 +22,7 @@ public class DDLParserTest
     dateofbirth   DATE        not null
 )";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(CreateTable));
+        Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((CreateTable)obj).TableName, "employees");
         Assert.AreEqual(((CreateTable)obj).Columns.Count, 5);
         Assert.AreEqual(((CreateTable)obj).Columns[0].Name, "id");
@@ -54,7 +55,7 @@ population INT64 null,
     PRIMARY KEY (`id`),
 INDEX `name` (`name`)";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(CreateTable));
+        Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((CreateTable)obj).TableName, "cities");
         Assert.AreEqual(((CreateTable)obj).Columns.Count, 3);
         Assert.AreEqual(((CreateTable)obj).Columns[0].Name, "id");
@@ -69,7 +70,7 @@ INDEX `name` (`name`)";
         Assert.AreEqual(((CreateTable)obj).Indexes[0].GetType(), typeof(PrimaryKey));
         Assert.AreEqual(((PrimaryKey)((CreateTable)obj).Indexes[0]).Columns[0], "id");
         Assert.AreEqual(((CreateTable)obj).Indexes[1].GetType(), typeof(Index));
-        Assert.AreEqual(((Index)((CreateTable)obj).Indexes[1]).Columns[0], "name");
+        Assert.AreEqual(((IndexDefinition)((CreateTable)obj).Indexes[1]).Columns[0], "name");
         
     }
     [Test]
@@ -77,7 +78,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"CREATE DATABASE test";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(CreateDatabase));
+        Assert.That(typeof(CreateDatabase), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((CreateDatabase)obj).DatabaseName, "test");
     }
 
@@ -86,7 +87,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"CREATE SCHEMA `test`";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(CreateDatabase));
+        Assert.That(typeof(CreateDatabase), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((CreateDatabase)obj).DatabaseName, "test");
     }
     [Test]
@@ -94,7 +95,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"DROP DATABASE test";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(DropDatabase));
+        Assert.That(typeof(DropDatabase), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((DropDatabase)obj).DatabaseName, "test");
     }
     [Test]
@@ -102,7 +103,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"DROP TABLE test";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(DropTable));
+        Assert.That(typeof(DropTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((DropTable)obj).TableName, "test");
     }
     [Test]
@@ -110,7 +111,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"DROP TABLE `test`";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(DropTable));
+        Assert.That(typeof(DropTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((DropTable)obj).TableName, "test");
     }
     [Test]
@@ -134,7 +135,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"DROP SCHEMA `test`";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(DropDatabase));
+        Assert.That(typeof(DropDatabase), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((DropDatabase)obj).DatabaseName, "test");
     }
     [Test]
@@ -142,7 +143,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"DROP SCHEMA test";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(DropDatabase));
+        Assert.That(typeof(DropDatabase), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((DropDatabase)obj).DatabaseName, "test");
     }
     [Test]
@@ -150,14 +151,14 @@ INDEX `name` (`name`)";
     {
         var sql = @"TRUNCATE TABLE test";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(TruncateTable));
+        Assert.That(typeof(TruncateTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((TruncateTable)obj).TableName, "test");
     }
     public void AlterTable1()
     {
         var sql = @"ALTER TABLE test ADD COLUMN name TEXT";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(AlterTable));
+        Assert.That(typeof(AlterTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((AlterTable)obj).TableName, "test");
         Assert.AreEqual(((AlterTable)obj).AddColumns[0].Name, "name");
         Assert.AreEqual(((AlterTable)obj).AddColumns[0].Type, "TEXT");
@@ -167,7 +168,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"ALTER TABLE test DROP COLUMN name";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(AlterTable));
+        Assert.That(typeof(AlterTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((AlterTable)obj).TableName, "test");
         Assert.AreEqual(((AlterTable)obj).DropColumns[0], "name");
         
@@ -176,7 +177,7 @@ INDEX `name` (`name`)";
     {
         var sql = @"ALTER TABLE test ADD COLUMN name TEXT, DROP COLUMN age";
         var obj = new QueryParser(sql).Parse();
-        Assert.AreEqual(obj.GetType(), typeof(AlterTable));
+        Assert.That(typeof(AlterTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((AlterTable)obj).TableName, "test");
         Assert.AreEqual(((AlterTable)obj).AddColumns[0].Name, "name");
         Assert.AreEqual(((AlterTable)obj).AddColumns[0].Type, "TEXT");

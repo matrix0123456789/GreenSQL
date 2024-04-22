@@ -1,6 +1,6 @@
 ﻿namespace GreenSQL.SqlNodes.Statement;
 
-public class DropTable
+public class DropTable: Statement
 {
-    
+    public string TableName { get; set; }
 }
