@@ -112,15 +112,17 @@ INDEX `name` (`name`)";
         var sql = @"DROP TABLE `test`";
         var obj = new QueryParser(sql).Parse();
         Assert.That(typeof(DropTable), Is.EqualTo(obj.GetType()));
+        Assert.AreEqual(((DropTable)obj).DatabaseName, null);
         Assert.AreEqual(((DropTable)obj).TableName, "test");
     }
     [Test]
     public void DropTable3()
     {
-        var sql = @"DROP TABLE `test`.`test`";
+        var sql = @"DROP TABLE `testA`.`testB`";
         var obj = new QueryParser(sql).Parse();
         Assert.AreEqual(obj.GetType(), typeof(DropTable));
-        Assert.AreEqual(((DropTable)obj).TableName, "test.test");
+        Assert.AreEqual(((DropTable)obj).DatabaseName, "testA");
+        Assert.AreEqual(((DropTable)obj).TableName, "testB");
     }
     [Test]
     public void DropDatabase2()
