@@ -53,7 +53,8 @@ public class DDLParserTest
 name TEXT,
 population INT64 null,
     PRIMARY KEY (`id`),
-INDEX `name` (`name`)";
+INDEX `name` (`name`)
+                      )";
         var obj = new QueryParser(sql).Parse();
         Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
         Assert.AreEqual(((CreateTable)obj).TableName, "cities");
@@ -69,7 +70,7 @@ INDEX `name` (`name`)";
         Assert.AreEqual(((CreateTable)obj).Columns[2].IsNotNull, false);
         Assert.AreEqual(((CreateTable)obj).Indexes[0].GetType(), typeof(PrimaryKey));
         Assert.AreEqual(((PrimaryKey)((CreateTable)obj).Indexes[0]).Columns[0], "id");
-        Assert.AreEqual(((CreateTable)obj).Indexes[1].GetType(), typeof(Index));
+        Assert.AreEqual(((CreateTable)obj).Indexes[1].GetType(), typeof(IndexDefinition));
         Assert.AreEqual(((IndexDefinition)((CreateTable)obj).Indexes[1]).Columns[0], "name");
         
     }

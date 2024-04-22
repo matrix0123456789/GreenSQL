@@ -41,32 +41,52 @@ public class QueryParser
                     position++;
                     while (position < code.Length)
                     {
-                        var (columnDefinition, key) = ParseColumnDefinition();
-                        columnDefinitions.Add(columnDefinition);
-                        if (key != null)
+                        if (IsKeyword("PRIMARY KEY"))
                         {
-                            indexes.Add(key);
+                            SkipKeyword("PRIMARY KEY");
+                            var columns = ReadColumnList();
+                            indexes.Add(new PrimaryKey() { Columns = columns });
                         }
-
-                        SkipWhiteSpace();
-                        if (position < code.Length && code[position] == ',')
+                        else if (IsKeyword("INDEX"))
                         {
-                            position++;
-                        }
-                        else if (position < code.Length && code[position] == ')')
-                        {
-                            position++;
-                            return new CreateTable
-                            {
-                                TableName = tableName,
-                                Columns = columnDefinitions,
-                                Indexes = indexes
-                            };
+                            SkipKeyword("INDEX");
+                            var indexName = ParseIdentifier();
+                            SkipWhiteSpace();
+                            var columns = ReadColumnList();
+                            indexes.Add(new IndexDefinition() { IndexName = indexName, Columns = columns });
                         }
                         else
                         {
-                            throw Exception("Expected ',' or ')'");
+                            var (columnDefinition, key) = ParseColumnDefinition();
+                            columnDefinitions.Add(columnDefinition);
+                            if (key != null)
+                            {
+                                indexes.Add(key);
+                            }
                         }
+
+                        SkipWhiteSpace();
+                            if (position < code.Length && code[position] == ',')
+                            {
+                                position++;
+                            }
+                            else if (position < code.Length && code[position] == ')')
+                            {
+                                position++;
+                                return new CreateTable
+                                {
+                                    TableName = tableName,
+                                    Columns = columnDefinitions,
+                                    Indexes = indexes
+                                };
+                            }
+                            else
+                            {
+                                throw Exception("Expected ',' or ')'");
+                            }
+                        
+                        
+                        SkipWhiteSpace();
                     }
 
                     throw Exception();
@@ -146,6 +166,39 @@ public class QueryParser
         }
     }
 
+    private List<string> ReadColumnList()
+    {
+        SkipWhiteSpace();
+        if (code[position] != '(')
+        {
+            throw Exception("Expected '('");
+        }
+
+        position++;
+        var columns = new List<string>();
+        while (position < code.Length)
+        {
+            var columnName = ParseIdentifier();
+            columns.Add(columnName);
+            SkipWhiteSpace();
+            if (position < code.Length && code[position] == ',')
+            {
+                position++;
+            }
+            else if (position < code.Length && code[position] == ')')
+            {
+                position++;
+                return columns;
+            }
+            else
+            {
+                throw Exception("Expected ',' or ')'");
+            }
+        }
+
+        throw Exception();
+    }
+
     private (ColumnDefinition, AbstractIndexDefinition?) ParseColumnDefinition()
     {
         var columnName = ParseIdentifier();
@@ -216,7 +269,8 @@ public class QueryParser
             var start = position;
             while (position < code.Length)
             {
-                if (char.IsWhiteSpace(code[position]))
+                var c = code[position];
+                if (char.IsWhiteSpace(c) || c==',' || c=='(' || c==')' || c==';')
                 {
                     break;
                 }
@@ -245,6 +299,10 @@ public class QueryParser
 
     private bool IsKeyword(string keyword)
     {
+        if(position+ keyword.Length > code.Length)
+        {
+            return false;
+        }
         return code.Substring(position, keyword.Length).Equals(keyword, StringComparison.OrdinalIgnoreCase);
     }
 
