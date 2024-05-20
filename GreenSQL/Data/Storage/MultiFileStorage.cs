@@ -1,4 +1,6 @@
-﻿namespace GreenSQL.Data.Storage;
+﻿using GreenSQL.Data.StorageNodes;
+
+namespace GreenSQL.Data.Storage;
 
 public class MultiFileStorage : IStorage, IDisposable
 {
@@ -53,6 +55,9 @@ public class MultiFileStorage : IStorage, IDisposable
         var path = Path.Combine(Directory.FullName, "db_" + database.Name + "/" + table.Name + ".dbtable");
         var stream = new FileInfo(path).Create();
         openFiles.Add(path, stream);
+
+        var node = new TableDefinitionNodeV1();
+        node.WriteToStream(stream);
     }
 
     public void Dispose()
