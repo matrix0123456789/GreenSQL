@@ -21,5 +21,11 @@
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f0419255_002D47e5_002D47ca_002Da82d_002Df8b180e94799/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CreateTable2 #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;81E545C1-AA63-4969-A197-CDD830780666/d:Unit/d:Parser/f:DDLParserTest.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;81E545C1-AA63-4969-A197-CDD830780666/d:Unit/d:Parser/f:DDLParserTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::81E545C1-AA63-4969-A197-CDD830780666::net8.0::GreenSQLTests.Integration.Storage.QueryToStrageTests.InitServer&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::81E545C1-AA63-4969-A197-CDD830780666::net8.0::GreenSQLTests.Integration.Storage.QueryToStrageTests.CreateDatabase&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
