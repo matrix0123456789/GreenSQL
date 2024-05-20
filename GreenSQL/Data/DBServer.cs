@@ -24,8 +24,13 @@ public class DBServer
         {
             throw new Exception("Database already exists");
         }
-        var database = new Database(databaseName);
+        var database = new Database(storage, databaseName);
         databases.Add(databaseName, database);
         storage.CreateDatabase(database);
+    }
+
+    public Database GetDatabase(string name)
+    {
+        return databases[name];
     }
 }

@@ -23,6 +23,7 @@ public class DDLParserTest
 )";
         var obj = new QueryParser(sql).Parse();
         Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
+        Assert.AreEqual(((CreateTable)obj).DatabaseName, null);
         Assert.AreEqual(((CreateTable)obj).TableName, "employees");
         Assert.AreEqual(((CreateTable)obj).Columns.Count, 5);
         Assert.AreEqual(((CreateTable)obj).Columns[0].Name, "id");
@@ -57,6 +58,7 @@ INDEX `name` (`name`)
                       )";
         var obj = new QueryParser(sql).Parse();
         Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
+        Assert.AreEqual(((CreateTable)obj).DatabaseName, null);
         Assert.AreEqual(((CreateTable)obj).TableName, "cities");
         Assert.AreEqual(((CreateTable)obj).Columns.Count, 3);
         Assert.AreEqual(((CreateTable)obj).Columns[0].Name, "id");
@@ -74,6 +76,19 @@ INDEX `name` (`name`)
         Assert.AreEqual(((IndexDefinition)((CreateTable)obj).Indexes[1]).Columns[0], "name");
         
     }
+
+    [Test]
+    public void CreateTable3()
+    {
+        var sql = @"CREATE TABLE abcd.efgh (
+    `id` INT32
+                      )";
+        var obj = new QueryParser(sql).Parse();
+        Assert.That(typeof(CreateTable), Is.EqualTo(obj.GetType()));
+        Assert.AreEqual(((CreateTable)obj).TableName, "efgh");
+        Assert.AreEqual(((CreateTable)obj).DatabaseName, "abcd");
+    }
+    
     [Test]
     public void CreateDatabase1()
     {

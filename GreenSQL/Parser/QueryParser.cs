@@ -32,7 +32,16 @@ public class QueryParser
             {
                 SkipKeyword("TABLE");
                 SkipWhiteSpace();
-                var tableName = ParseIdentifier();
+                string tableName = ParseIdentifier();
+                string dbName = null;
+                SkipWhiteSpace();
+                if (this.code[this.position] == '.')
+                {
+                    this.position++;
+                    dbName = tableName;
+                    tableName = ParseIdentifier();
+                }
+                
                 var columnDefinitions = new List<ColumnDefinition>();
                 var indexes = new List<AbstractIndexDefinition>();
                 SkipWhiteSpace();
@@ -75,6 +84,7 @@ public class QueryParser
                                 position++;
                                 return new CreateTable
                                 {
+                                    DatabaseName = dbName,
                                     TableName = tableName,
                                     Columns = columnDefinitions,
                                     Indexes = indexes
@@ -270,7 +280,7 @@ public class QueryParser
             while (position < code.Length)
             {
                 var c = code[position];
-                if (char.IsWhiteSpace(c) || c==',' || c=='(' || c==')' || c==';')
+                if (char.IsWhiteSpace(c) || c==',' || c=='(' || c==')' || c==';'|| c=='.')
                 {
                     break;
                 }

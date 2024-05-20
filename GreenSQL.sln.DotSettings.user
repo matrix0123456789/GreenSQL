@@ -7,6 +7,9 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=01e04b19_002D86c3_002D4136_002Da478_002Dc5dabc36fa4c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from DDLParserTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;ProjectFile&gt;81E545C1-AA63-4969-A197-CDD830780666/d:Unit/d:Parser/f:DDLParserTest.cs&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=071cf025_002Ddefe_002D4152_002D9c41_002D2331d5b49448/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;GreenSQLTests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\other\Documents\GitHub\streamy\GreenSQL\GreenSQLTests" Presentation="&amp;lt;GreenSQLTests&amp;gt;" /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3a49d7bc_002D2687_002D46f8_002Da8b6_002De8b5ac1e81d5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TruncateTable1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;ProjectFile&gt;81E545C1-AA63-4969-A197-CDD830780666/d:Unit/d:Parser/f:DDLParserTest.cs&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
@@ -20,12 +23,6 @@
     &lt;TestId&gt;NUnit3x::81E545C1-AA63-4969-A197-CDD830780666::net8.0::GreenSQLTests.Unit.Parser.DDLParserTest.CreateTable2&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f0419255_002D47e5_002D47ca_002Da82d_002Df8b180e94799/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CreateTable2 #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Or&gt;&#xD;
-    &lt;ProjectFile&gt;81E545C1-AA63-4969-A197-CDD830780666/d:Unit/d:Parser/f:DDLParserTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;TestAncestor&gt;&#xD;
-      &lt;TestId&gt;NUnit3x::81E545C1-AA63-4969-A197-CDD830780666::net8.0::GreenSQLTests.Integration.Storage.QueryToStrageTests.InitServer&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;NUnit3x::81E545C1-AA63-4969-A197-CDD830780666::net8.0::GreenSQLTests.Integration.Storage.QueryToStrageTests.CreateDatabase&lt;/TestId&gt;&#xD;
-    &lt;/TestAncestor&gt;&#xD;
-  &lt;/Or&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f0419255_002D47e5_002D47ca_002Da82d_002Df8b180e94799/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CreateTable2 #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\other\Documents\GitHub\streamy\GreenSQL\GreenSQLTests" Presentation="&amp;lt;GreenSQLTests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

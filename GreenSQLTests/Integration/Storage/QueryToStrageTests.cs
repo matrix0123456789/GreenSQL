@@ -42,4 +42,32 @@ public class QueryToStrageTests
             Assert.That(storage.Server.Databases[0].Name, Is.EqualTo("test"));
         }
     }
+
+    [Test]
+    public void CreateEmptyTable()
+    {
+        var tmpDir = Path.GetTempPath()+Guid.NewGuid();
+        using (var storage = new MultiFileStorage(tmpDir))
+        {
+            storage.Load();
+            var context = storage.Server.CreateNewContext();
+
+            context.Execute("CREATE DATABASE test");
+            context.Execute("CREATE TABLE test.test_table (id INT PRIMARY KEY)");
+            
+            
+            Assert.That(storage.Server.GetDatabase("test").Tables.Count, Is.EqualTo(1));
+            Assert.That(storage.Server.GetDatabase("test").Tables[0].Name, Is.EqualTo("test_table"));
+        }
+
+        
+        Assert.True(new FileInfo(tmpDir+"/db_test/test_table.dbtable").Exists);
+
+        using (var storage = new MultiFileStorage(tmpDir))
+        {
+            storage.Load();
+            Assert.That(storage.Server.GetDatabase("test").Tables.Count, Is.EqualTo(1));
+            Assert.That(storage.Server.GetDatabase("test").Tables[0].Name, Is.EqualTo("test_table"));
+        }
+    }
 }

@@ -3,4 +3,5 @@
 public interface IStorage
 {
     void CreateDatabase(Database database);
+    void CreateTable(Database database, DBTable table);
 }

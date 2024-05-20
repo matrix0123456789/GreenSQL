@@ -21,6 +21,11 @@ public class DBExecutionContext
        {
            server.CreateDatabase(((CreateDatabase)parsed).DatabaseName);
        }
+       else if (parsed is CreateTable)
+       {
+           var database= server.GetDatabase(((CreateTable)parsed).DatabaseName);
+              database.CreateTable(((CreateTable)parsed).TableName);
+       }
        else
        {
            throw new NotImplementedException();
