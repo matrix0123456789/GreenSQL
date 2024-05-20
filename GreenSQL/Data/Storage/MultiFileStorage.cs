@@ -30,6 +30,10 @@ public class MultiFileStorage : IStorage, IDisposable
                 {
                     if (file.Extension == ".dbtable")
                     {
+                        var stream = file.Open(FileMode.OpenOrCreate);
+                        stream.Position = 0;
+                        var nodes=ReadStream(stream);
+                        openFiles.Add(file.FullName, stream);
                         var table= new DBTable(file.Name.Substring(0, file.Name.Length - 8));
                         tables.Add(table);
                     }
@@ -40,6 +44,17 @@ public class MultiFileStorage : IStorage, IDisposable
         }
 
         this.Server = new DBServer(this, databases);
+    }
+
+    private List<AbstractStorageNode> ReadStream(FileStream stream)
+    {
+        var ret=new List<AbstractStorageNode>();
+        var reader=new BinaryReader(stream);
+        while (reader.BaseStream.Position < reader.BaseStream.Length)
+        {
+            ret.Add(AbstractStorageNode.ReadFromStream(reader));
+        }
+        return ret;
     }
 
     public DBServer Server { get; set; }
@@ -57,7 +72,8 @@ public class MultiFileStorage : IStorage, IDisposable
         openFiles.Add(path, stream);
 
         var node = new TableDefinitionNodeV1();
-        node.WriteToStream(stream);
+        using var streamWriter = new BinaryWriter(stream);
+        node.WriteToStream(streamWriter);
     }
 
     public void Dispose()
