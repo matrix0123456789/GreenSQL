@@ -1,2 +1,1 @@
-Streamy:
-* [https://youtube.com/live/wsbX221ADFA]
+https://www.youtube.com/playlist?list=PLMQizpIxrzY8
