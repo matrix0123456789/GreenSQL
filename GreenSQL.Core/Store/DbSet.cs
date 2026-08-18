@@ -6,6 +6,22 @@ public class DbSet
 {
     public ReaderWriterLockSlim LockSlim = new ReaderWriterLockSlim();
     private Dictionary<string, Database> databases = new();
+    public List<string> DatabaseNames
+    {
+        get
+        {
+            LockSlim.EnterReadLock();
+            try
+            {
+                return databases.Keys.ToList();
+            }
+            finally
+            {
+                LockSlim.ExitReadLock();
+            }
+        }
+    }
+
     public void CreateDatabase(string databaseName)
     {
         LockSlim.EnterWriteLock();

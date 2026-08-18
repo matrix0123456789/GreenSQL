@@ -4,6 +4,23 @@ public class Database
 {
     public ReaderWriterLockSlim LockSlim = new ReaderWriterLockSlim();
     private Dictionary<string, Table> tables = new();
+
+    public List<string> ListTables
+    {
+        get
+        {
+            LockSlim.EnterReadLock();
+            try
+            {
+                return tables.Keys.ToList();
+            }
+            finally
+            {
+                LockSlim.ExitReadLock();
+            }
+        }
+    }
+
     public Table CreateTable(string tableName)
     {
         LockSlim.EnterWriteLock();
@@ -20,7 +37,8 @@ public class Database
                 tables.Add(tableName, ret);
                 return ret;
             }
-        }finally
+        }
+        finally
         {
             LockSlim.ExitWriteLock();
         }

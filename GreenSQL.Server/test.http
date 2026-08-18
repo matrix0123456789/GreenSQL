@@ -1,0 +1,30 @@
+POST http://localhost:5142/_query
+
+CREATE DATABASE abc
+
+###
+
+POST http://localhost:5142/_query
+
+CREATE TABLE abc.def (a TEXT, b TEXT)
+
+###
+
+POST http://localhost:5142/_query
+
+INSERT INTO abc.def ( b, a) VALUES ('123', '456')
+
+
+###
+
+POST http://localhost:5142/_query
+
+SELECT * FROM abc.def
+
+
+
+###
+GET http://localhost:5142/
+
+###
+GET http://localhost:5142/abc

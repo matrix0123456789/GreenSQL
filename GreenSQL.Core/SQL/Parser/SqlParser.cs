@@ -203,10 +203,15 @@ public class SqlParser
 
     private ExpressionNode ParseExpression()
     {
+        SkipWhitespace();
         ExpressionNode lastNode = null;
         while (position < code.Length)
         {
             if (Is(")"))
+            {
+                return lastNode;
+            }
+            else if (Is(","))
             {
                 return lastNode;
             }
