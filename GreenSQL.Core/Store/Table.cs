@@ -79,4 +79,17 @@ public class Table
             LockSlim.ExitWriteLock();
         }
     }
+
+    public IEnumerable<object[]> GetAllData()
+    {
+        LockSlim.EnterReadLock();
+        try
+        {
+            return data.ToList();
+        }
+        finally
+        {
+            LockSlim.ExitReadLock();
+        }
+    }
 }

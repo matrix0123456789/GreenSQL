@@ -172,6 +172,25 @@ public class SqlParser
                         }
                     }
                 }
+            }else if (Is("SELECT"))
+            {
+                var node = new SelectNode();
+                Skip("SELECT");
+                SkipWhitespace();
+                if (Is("*"))
+                {
+                    Skip("*");
+                    node.Collumns = null;//todo make it more pretty later
+                }
+                else
+                {
+                    throw new NotImplementedException("todo");
+                }
+                SkipWhitespace();
+                Skip("FROM");
+                node.From.Add(ParsePathNode());
+                //todo
+                ret.Add(node);
             }
             else
             {

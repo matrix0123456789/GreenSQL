@@ -101,6 +101,26 @@ public class CommandRunner
                 throw new NotImplementedException("todo");
             }
         }
+        else if (node is SelectNode sqlSelectNode)
+        {
+            //oversimplified
+            var tablePath=(sqlSelectNode.From.First() as PathNode);
+            var db=dbSet.GetDatabase(tablePath.Values[0]);
+            if (db == null)
+            {
+                throw new Exception($"Database {tablePath.Values[0]} does not exist");
+            }
+            var table = db.GetTable(tablePath.Values[1]);
+            if (table == null)
+            {
+                throw new Exception($"Table {tablePath.Values[1]} does not exist");
+            }
+
+            return new ExecutionResult()
+            {
+                Data = table.GetAllData()
+            };
+        }
         else
         {
             throw new NotImplementedException();
