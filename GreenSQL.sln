@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenSQL.Core.Test", "Green
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenSQL.Server", "GreenSQL.Server\GreenSQL.Server.csproj", "{CB7217D0-26D6-42AD-B93D-479CE8EAA550}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenSQL.CLI", "GreenSQL.CLI\GreenSQL.CLI.csproj", "{97FAB942-9D36-468B-A99C-CF1EEF728066}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{CB7217D0-26D6-42AD-B93D-479CE8EAA550}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB7217D0-26D6-42AD-B93D-479CE8EAA550}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB7217D0-26D6-42AD-B93D-479CE8EAA550}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97FAB942-9D36-468B-A99C-CF1EEF728066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97FAB942-9D36-468B-A99C-CF1EEF728066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97FAB942-9D36-468B-A99C-CF1EEF728066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97FAB942-9D36-468B-A99C-CF1EEF728066}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

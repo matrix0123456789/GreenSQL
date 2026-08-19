@@ -1,3 +1,5 @@
+using GreenSQL.Core.Test.Store.Events;
+
 namespace GreenSQL.Core.Store;
 
 public class Table
@@ -5,6 +7,7 @@ public class Table
     public ReaderWriterLockSlim LockSlim = new ReaderWriterLockSlim();
     private Dictionary<string, Column> columns = new();
     private List<object[]> data = new List<object[]>();
+    public event Action<Event> Changed;
 
     public IEnumerable<string> ColumnNames
     {
@@ -39,6 +42,7 @@ public class Table
                     IsNullable = isNullable
                 };
                 columns.Add(name, column);
+                Changed?.Invoke(new AddColumnEvent() { ColumnName = name, ColumnType = dataType, IsNullable = isNullable });
                 return column;
             }
         }
@@ -73,6 +77,7 @@ public class Table
         try
         {
             data.Add(newRow);
+            Changed?.Invoke(new InsertEvent() { Values = newRow });
         }
         finally
         {
