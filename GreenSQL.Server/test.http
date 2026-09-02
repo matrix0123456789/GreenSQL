@@ -6,13 +6,13 @@ CREATE DATABASE abc
 
 POST http://localhost:5142/_query
 
-CREATE TABLE abc.def (a TEXT, b TEXT, c INT, d FLOAT)
+CREATE TABLE abc.def (a TEXT, b TEXT, c INT, d FLOAT, e DATE, f DATETIME, g TIME)
 
 ###
 
 POST http://localhost:5142/_query
 
-INSERT INTO abc.def ( b, a, c, d) VALUES ('Hello, world!', '456', 123, 0.123)
+INSERT INTO abc.def ( b, a, c, d, e, f, g) VALUES ('Hello, world!', '456', 123, 0.123, '2025-01-01', '2025-01-01 12:34:56', '12:34:56')
 
 
 ###

@@ -133,7 +133,23 @@ public class CommandRunner
     {
         if(expressionNode is StringLiteralNode stringLiteralNode)
         {
-            return stringLiteralNode.Value;
+            if (expectedType == DataType.Text)
+            {
+                return stringLiteralNode.Value;
+            }else if(expectedType == DataType.Date)
+            {
+                return DateOnly.Parse(stringLiteralNode.Value);
+            }else if(expectedType == DataType.Time)
+            {
+                return TimeOnly.Parse(stringLiteralNode.Value);
+            }else if(expectedType == DataType.DateTime)
+            {
+                return DateTime.Parse(stringLiteralNode.Value);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
         else if(expressionNode is IntegerLiteralNode integerLiteralNode)
         {
