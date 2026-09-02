@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Text.RegularExpressions;
 using GreenSQL.Core.SQL.Nodes;
 
@@ -121,7 +122,7 @@ public class SqlParser
                     Error("Expected 'DATABASE' or 'TABLE' after 'DROP'");
                 }
             }
-            
+
             else if (Is("INSERT"))
             {
                 Skip("INSERT");
@@ -172,7 +173,8 @@ public class SqlParser
                         }
                     }
                 }
-            }else if (Is("SELECT"))
+            }
+            else if (Is("SELECT"))
             {
                 var node = new SelectNode();
                 Skip("SELECT");
@@ -180,12 +182,13 @@ public class SqlParser
                 if (Is("*"))
                 {
                     Skip("*");
-                    node.Collumns = null;//todo make it more pretty later
+                    node.Collumns = null; //todo make it more pretty later
                 }
                 else
                 {
                     throw new NotImplementedException("todo");
                 }
+
                 SkipWhitespace();
                 Skip("FROM");
                 node.From.Add(ParsePathNode());
@@ -231,7 +234,30 @@ public class SqlParser
                 }
 
                 Skip("'");
-                lastNode=new StringLiteralNode(){Value = value};
+                lastNode = new StringLiteralNode() { Value = value };
+            }
+            else if (Is("-") || char.IsDigit(code[position]))
+            {
+                if (lastNode != null)
+                {
+                    Error("Unexpected integer literal");
+                }
+
+                var value = "";
+                if (Is("-"))
+                {
+                    value += "-";
+                    position++;
+                }
+
+                SkipWhitespace();
+                while (position < code.Length && char.IsDigit(code[position]))
+                {
+                    value += code[position];
+                    position++;
+                }
+
+                lastNode = new IntegerLiteralNode() { Value = BigInteger.Parse(value) };
             }
             else
             {

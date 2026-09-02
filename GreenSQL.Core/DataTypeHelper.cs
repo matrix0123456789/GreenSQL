@@ -7,6 +7,8 @@ public static class DataTypeHelper
         return x.ToUpper() switch
         {
             "TEXT" => DataType.Text,
+            "INTEGER" => DataType.Integer,
+            "INT"=> DataType.Integer,
             _ => throw new ArgumentException($"Invalid data type: {x}")
         };
     }
@@ -16,6 +18,7 @@ public static class DataTypeHelper
        return x switch
        {
             DataType.Text => string.Empty,
+            DataType.Integer => 0,
             _ => throw new ArgumentException($"Invalid data type: {x}")
        };
     }

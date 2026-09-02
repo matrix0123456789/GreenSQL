@@ -6,13 +6,13 @@ CREATE DATABASE abc
 
 POST http://localhost:5142/_query
 
-CREATE TABLE abc.def (a TEXT, b TEXT)
+CREATE TABLE abc.def (a TEXT, b TEXT, c INT)
 
 ###
 
 POST http://localhost:5142/_query
 
-INSERT INTO abc.def ( b, a) VALUES ('Hello, world!', '456')
+INSERT INTO abc.def ( b, a, c) VALUES ('Hello, world!', '456', 123)
 
 
 ###

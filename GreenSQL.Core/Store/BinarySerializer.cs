@@ -42,6 +42,10 @@ public class BinarySerializer(StreamWrapper stream)
                 {
                     values[i]=stream.ReadString();
                 }
+                else if (dataType==DataType.Integer)
+                {
+                    values[i]=stream.ReadInt64();
+                }
                 else
                 {
                     throw new NotImplementedException();
@@ -89,6 +93,11 @@ public class BinarySerializer(StreamWrapper stream)
                 {
                     stream.WriteDataType(DataType.Text);
                     stream.WriteString(s);
+                }
+                else if (value is long l)
+                {
+                    stream.WriteDataType(DataType.Integer);
+                    stream.WriteInt64(l);
                 }
                 else
                 {

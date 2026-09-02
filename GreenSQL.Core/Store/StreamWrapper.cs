@@ -97,6 +97,11 @@ public class StreamWrapper(Stream stream)
         _writer.Write(columnType);
         _writer.Flush();
     }
+    public void WriteInt64(long columnType)
+    {
+        _writer.Write(columnType);
+        _writer.Flush();
+    }
     public void WriteBoolean(bool value)
     {
         _writer.Write(value);
@@ -105,6 +110,10 @@ public class StreamWrapper(Stream stream)
     public UInt64 ReadUint64()
     {
         return _reader.ReadUInt64();
+    }
+    public Int64 ReadInt64()
+    {
+        return _reader.ReadInt64();
     }
 
     public bool ReadBoolean()

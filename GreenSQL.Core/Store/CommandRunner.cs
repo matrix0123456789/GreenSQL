@@ -84,12 +84,14 @@ public class CommandRunner
                     collumnMap[i] = resultIndex;
                 }
 
+                var columnTypes = table.ColumnTypes;
                 foreach (var row in insertByTupleNode.Values)
                 {
                     var newRow = table.GetDefaultRow();
                     for (var i = 0; i < collumnMap.Length; i++)
                     {
-                        newRow[collumnMap[i]] = ExecuteExpression(row[i]);
+                       
+                        newRow[collumnMap[i]] = ExecuteExpression(row[i], columnTypes[collumnMap[i]]);
                     }
                     table.AddRow(newRow);
                 }
@@ -127,11 +129,22 @@ public class CommandRunner
         }
     }
 
-    private object ExecuteExpression(ExpressionNode expressionNode)
+    private object ExecuteExpression(ExpressionNode expressionNode, DataType? expectedType=null)
     {
         if(expressionNode is StringLiteralNode stringLiteralNode)
         {
             return stringLiteralNode.Value;
+        }
+        else if(expressionNode is IntegerLiteralNode integerLiteralNode)
+        {
+            if (expectedType == DataType.Integer)
+            {
+                return (long)integerLiteralNode.Value;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
         else
         {

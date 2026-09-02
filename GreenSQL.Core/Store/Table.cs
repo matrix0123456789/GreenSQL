@@ -24,6 +24,22 @@ public class Table
             }
         }
     }
+    public DataType[] ColumnTypes
+    {
+        get
+        {
+            LockSlim.EnterReadLock();
+            try
+            {
+                return columns.Values.Select(c => c.DataType).ToArray();
+            }
+            finally
+            {
+                LockSlim.ExitReadLock();
+            }
+        }
+    }
+    
 
     public Column AddColumn(string name, DataType dataType, bool isNullable)
     {
