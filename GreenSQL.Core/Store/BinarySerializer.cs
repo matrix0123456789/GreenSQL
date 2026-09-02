@@ -4,7 +4,6 @@ namespace GreenSQL.Core.Store;
 
 public class BinarySerializer(StreamWrapper stream)
 {
-    
     public Event ReadSingle()
     {
         var type = stream.ReadEventType();
@@ -14,13 +13,15 @@ public class BinarySerializer(StreamWrapper stream)
             {
                 Path = stream.ReadStringArray()
             };
-        }else if (type == EventType.CreateTable)
+        }
+        else if (type == EventType.CreateTable)
         {
             return new CreateTableEvent()
             {
                 Path = stream.ReadStringArray()
             };
-        }else if (type == EventType.AddColumn)
+        }
+        else if (type == EventType.AddColumn)
         {
             return new AddColumnEvent()
             {
@@ -29,34 +30,71 @@ public class BinarySerializer(StreamWrapper stream)
                 ColumnType = (DataType)stream.ReadUint64(),
                 IsNullable = stream.ReadBoolean()
             };
+        } else if (type == EventType.Insert)
+        {
+            var path=stream.ReadStringArray();
+            var valuesCount=stream.ReadUint64();
+            var values=new object[valuesCount];
+            for (ulong i = 0; i < valuesCount; i++)
+            {
+                var dataType=stream.ReadDataType();
+                if (dataType==DataType.Text)
+                {
+                    values[i]=stream.ReadString();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            return new InsertEvent()
+            {
+                TablePath = path,
+                Values = values
+            };
         }
 
         throw new NotImplementedException();
     }
-    
+
     public void Write(Event e)
     {
         if (e is CreateDatabaseEvent createDatabaseEvent)
         {
             stream.WriteEventType(EventType.CreateDatabase);
             stream.WriteStringArray(createDatabaseEvent.Path);
-        }else if (e is CreateTableEvent createTableEvent)
+        }
+        else if (e is CreateTableEvent createTableEvent)
 
         {
             stream.WriteEventType(EventType.CreateTable);
             stream.WriteStringArray(createTableEvent.Path);
-        }else if (e is AddColumnEvent addColumnEvent)
+        }
+        else if (e is AddColumnEvent addColumnEvent)
         {
             stream.WriteEventType(EventType.AddColumn);
             stream.WriteStringArray(addColumnEvent.TablePath);
             stream.WriteString(addColumnEvent.ColumnName);
             stream.WriteUint64((UInt64)addColumnEvent.ColumnType);
             stream.WriteBoolean(addColumnEvent.IsNullable);
-        }else if (e is InsertEvent insertEvent)
+        }
+        else if (e is InsertEvent insertEvent)
         {
-            throw new NotImplementedException();
-            //_stream.WriteEventType(EventType.Insert);
-
+            stream.WriteEventType(EventType.Insert);
+            stream.WriteStringArray(insertEvent.TablePath);
+            stream.WriteUint64((UInt64)insertEvent.Values.LongLength);
+            foreach (var value in insertEvent.Values)
+            {
+                if (value is string s)
+                {
+                    stream.WriteDataType(DataType.Text);
+                    stream.WriteString(s);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
         }
     }
 }

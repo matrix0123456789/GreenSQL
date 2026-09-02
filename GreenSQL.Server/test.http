@@ -12,7 +12,7 @@ CREATE TABLE abc.def (a TEXT, b TEXT)
 
 POST http://localhost:5142/_query
 
-INSERT INTO abc.def ( b, a) VALUES ('123', '456')
+INSERT INTO abc.def ( b, a) VALUES ('Hello, world!', '456')
 
 
 ###

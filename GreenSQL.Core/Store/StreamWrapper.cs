@@ -42,6 +42,19 @@ public class StreamWrapper(Stream stream)
         var x=_reader.ReadUInt16();
         return (EventType)x;
     }
+    
+    public void WriteDataType(DataType value)
+    {
+        var x=(ushort)value;
+        _writer.Write(x);
+        _writer.Flush();
+    }
+
+    public DataType ReadDataType()
+    {
+        var x=_reader.ReadUInt16();
+        return (DataType)x;
+    }
 
     public void WriteStringArray(string[] arr)
     {
