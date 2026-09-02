@@ -9,6 +9,7 @@ public static class DataTypeHelper
             "TEXT" => DataType.Text,
             "INTEGER" => DataType.Integer,
             "INT"=> DataType.Integer,
+            "FLOAT" => DataType.Float,
             _ => throw new ArgumentException($"Invalid data type: {x}")
         };
     }
@@ -19,6 +20,7 @@ public static class DataTypeHelper
        {
             DataType.Text => string.Empty,
             DataType.Integer => 0,
+            DataType.Float => 0.0,
             _ => throw new ArgumentException($"Invalid data type: {x}")
        };
     }

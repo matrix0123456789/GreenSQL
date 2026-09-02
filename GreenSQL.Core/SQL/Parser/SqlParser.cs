@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using GreenSQL.Core.SQL.Nodes;
@@ -236,8 +237,9 @@ public class SqlParser
                 Skip("'");
                 lastNode = new StringLiteralNode() { Value = value };
             }
-            else if (Is("-") || char.IsDigit(code[position]))
+            else if (Is("-") || char.IsDigit(code[position])||Is("."))
             {
+                var isFloat = false;
                 if (lastNode != null)
                 {
                     Error("Unexpected integer literal");
@@ -257,7 +259,52 @@ public class SqlParser
                     position++;
                 }
 
-                lastNode = new IntegerLiteralNode() { Value = BigInteger.Parse(value) };
+                if (Is("."))
+                {
+                    isFloat = true;
+                    value += ".";
+                    position++;
+                    while (position < code.Length && char.IsDigit(code[position]))
+                    {
+                        value += code[position];
+                        position++;
+                    }
+                }
+                if(Is("e") || Is("E"))
+                {
+                    isFloat = true;
+                    value += "e";
+                    position++;
+                    if(Is("+") || Is("-"))
+                    {
+                        value += code[position];
+                        position++;
+                    }
+                    while (position < code.Length && char.IsDigit(code[position]))
+                    {
+                        value += code[position];
+                        position++;
+                    }
+                    if (Is("."))
+                    {
+                        value += ".";
+                        position++;
+                        while (position < code.Length && char.IsDigit(code[position]))
+                        {
+                            value += code[position];
+                            position++;
+                        }
+                    }
+                }
+
+                if (isFloat)
+                {
+                    lastNode = new FloatLiteralNode() { Value = double.Parse(value, CultureInfo.InvariantCulture) };
+                }
+                else
+                {
+                    lastNode = new IntegerLiteralNode() { Value = BigInteger.Parse(value) };
+                }
             }
             else
             {

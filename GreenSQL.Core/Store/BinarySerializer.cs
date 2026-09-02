@@ -99,6 +99,11 @@ public class BinarySerializer(StreamWrapper stream)
                     stream.WriteDataType(DataType.Integer);
                     stream.WriteInt64(l);
                 }
+                else if (value is double d)
+                {
+                    stream.WriteDataType(DataType.Float);
+                    stream.WriteFloat64(d);
+                }
                 else
                 {
                     throw new NotImplementedException();

@@ -2,6 +2,7 @@ namespace GreenSQL.Core;
 
 public enum DataType
 {
-    Text=1,
-    Integer=2,
+    Text = 1,
+    Integer = 2,
+    Float = 3
 }

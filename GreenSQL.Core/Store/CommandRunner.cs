@@ -140,6 +140,20 @@ public class CommandRunner
             if (expectedType == DataType.Integer)
             {
                 return (long)integerLiteralNode.Value;
+            }else if(expectedType == DataType.Float)
+            {
+                return (double)integerLiteralNode.Value;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+        else if(expressionNode is FloatLiteralNode floatLiteralNode)
+        {
+            if (expectedType == DataType.Float)
+            {
+                return floatLiteralNode.Value;
             }
             else
             {

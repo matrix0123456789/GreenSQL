@@ -78,6 +78,7 @@ public class SqlParserTest
         Assert.That(((InsertByTupleNode)node).Values[0][0], Is.TypeOf<StringLiteralNode>());
         Assert.That((((InsertByTupleNode)node).Values[0][0] as StringLiteralNode).Value, Is.EqualTo("Test1"));
     }
+
     [Test]
     public void CreateInsert2Columns()
     {
@@ -97,17 +98,27 @@ public class SqlParserTest
     [Test]
     public void CreateInsertInteger()
     {
-        var node = SqlParser.Parse("INSERT INTO tableName (column1, column2) VALUES (123, -987)").First();
+        var node = SqlParser
+            .Parse("INSERT INTO tableName (column1, column2, column3, column4) VALUES (123, -987, 1.23, 2.3e-6)")
+            .First();
 
         Assert.That(node, Is.TypeOf<InsertByTupleNode>());
         Assert.That(((InsertByTupleNode)node).TableName.Values[0], Is.EqualTo("tableName"));
-        Assert.That(((InsertByTupleNode)node).Collumns.Count, Is.EqualTo(2));
+        Assert.That(((InsertByTupleNode)node).Collumns.Count, Is.EqualTo(4));
         Assert.That(((InsertByTupleNode)node).Collumns[0], Is.EqualTo("column1"));
         Assert.That(((InsertByTupleNode)node).Collumns[1], Is.EqualTo("column2"));
+        Assert.That(((InsertByTupleNode)node).Collumns[2], Is.EqualTo("column3"));
+        Assert.That(((InsertByTupleNode)node).Collumns[3], Is.EqualTo("column4"));
         Assert.That(((InsertByTupleNode)node).Values[0][0], Is.TypeOf<IntegerLiteralNode>());
         Assert.That((((InsertByTupleNode)node).Values[0][0] as IntegerLiteralNode).Value, Is.EqualTo((BigInteger)123));
         Assert.That(((InsertByTupleNode)node).Values[0][1], Is.TypeOf<IntegerLiteralNode>());
         Assert.That((((InsertByTupleNode)node).Values[0][1] as IntegerLiteralNode).Value,
             Is.EqualTo((BigInteger)(-987)));
+        Assert.That(((InsertByTupleNode)node).Values[0][2], Is.TypeOf<FloatLiteralNode>());
+        Assert.That((((InsertByTupleNode)node).Values[0][2] as FloatLiteralNode).Value,
+            Is.EqualTo((double)(1.23)));
+        Assert.That(((InsertByTupleNode)node).Values[0][3], Is.TypeOf<FloatLiteralNode>());
+        Assert.That((((InsertByTupleNode)node).Values[0][3] as FloatLiteralNode).Value,
+            Is.EqualTo((double)(2.3e-6)));
     }
 }
