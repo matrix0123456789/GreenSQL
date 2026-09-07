@@ -121,4 +121,52 @@ public class SqlParserTest
         Assert.That((((InsertByTupleNode)node).Values[0][3] as FloatLiteralNode).Value,
             Is.EqualTo((double)(2.3e-6)));
     }
+
+    [Test]
+    public void SelectStar()
+    {
+        var node = SqlParser.Parse(@"SELECT * from abc").First();
+
+        Assert.That(node, Is.TypeOf<SelectNode>());
+        Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(1));
+        Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(true));
+        Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<WildcardNode>());
+    }
+    
+    [Test]
+    public void SelectSomeColumns()
+    {
+        var node = SqlParser.Parse(@"SELECT first, second, third from abc").First();
+
+        Assert.That(node, Is.TypeOf<SelectNode>());
+        Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(3));
+        Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(false));
+        Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<PathExpressionNode>());
+        Assert.That((((SelectNode)node).Collumns[0].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "first" }));
+        Assert.That(((SelectNode)node).Collumns[1].IsSpread, Is.EqualTo(false));
+        Assert.That(((SelectNode)node).Collumns[1].Expression, Is.TypeOf<PathExpressionNode>());
+        Assert.That((((SelectNode)node).Collumns[1].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "second" }));
+        Assert.That(((SelectNode)node).Collumns[2].IsSpread, Is.EqualTo(false));
+        Assert.That(((SelectNode)node).Collumns[2].Expression, Is.TypeOf<PathExpressionNode>());
+        Assert.That((((SelectNode)node).Collumns[2].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "third" }));
+    }
+
+    [Test]
+    public void SelectNoTable()
+    {
+        var node = SqlParser.Parse(@"SELECT 'abc', 123, 123 as x").First();
+
+        Assert.That(node, Is.TypeOf<SelectNode>());
+        Assert.That(((SelectNode)node).From.Count, Is.EqualTo(0));
+        Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(3));
+        Assert.That(((SelectNode)node).Collumns[0].Alias, Is.EqualTo("'abc'"));
+        Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<StringLiteralNode>());
+        Assert.That((((SelectNode)node).Collumns[0].Expression as StringLiteralNode).Value, Is.EqualTo("abc"));
+        Assert.That(((SelectNode)node).Collumns[1].Alias, Is.EqualTo("123"));
+        Assert.That(((SelectNode)node).Collumns[1].Expression, Is.TypeOf<IntegerLiteralNode>());
+        Assert.That((((SelectNode)node).Collumns[1].Expression as IntegerLiteralNode).Value, Is.EqualTo((BigInteger)123));
+        Assert.That(((SelectNode)node).Collumns[2].Alias, Is.EqualTo("x"));
+        Assert.That(((SelectNode)node).Collumns[2].Expression, Is.TypeOf<IntegerLiteralNode>());
+        Assert.That((((SelectNode)node).Collumns[2].Expression as IntegerLiteralNode).Value, Is.EqualTo((BigInteger)123));
+    }
 }
