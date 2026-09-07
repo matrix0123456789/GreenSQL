@@ -180,20 +180,53 @@ public class SqlParser
                 var node = new SelectNode();
                 Skip("SELECT");
                 SkipWhitespace();
-                if (Is("*"))
+                while (position < code.Length && !Is("FROM") && !Is("WHERE") && !Is("GROUP") && !Is("LIMIT") &&
+                       !Is("ORDER"))
                 {
-                    Skip("*");
-                    node.Collumns = null; //todo make it more pretty later
-                }
-                else
-                {
-                    throw new NotImplementedException("todo");
+                    SkipWhitespace();
+                    if (node.Collumns.Any())
+                    {
+                        Skip(",");
+                    }
+
+                    var startPosition = position;
+                    var expression = ParseExpression();
+                    SkipWhitespace();
+                    if (Is("AS"))
+                    {
+                        Skip("AS");
+                        SkipWhitespace();
+                        var alias = ParsePathNode().Values.Single();
+                        node.Collumns.Add(new ExpressionAsNode()
+                        {
+                            Expression = expression,
+                            Alias = alias
+                        });
+                    }else if (expression is WildcardNode)
+                    {
+                        node.Collumns.Add(new ExpressionAsNode()
+                        {
+                            Expression = expression,
+                            IsSpread = true
+                        });
+                    }
+                    else
+                    {
+                        node.Collumns.Add(new ExpressionAsNode()
+                        {
+                            Expression = expression,
+                            Alias = this.code.Substring(startPosition, position - startPosition).Trim()
+                        });
+                    }
                 }
 
                 SkipWhitespace();
-                Skip("FROM");
-                node.From.Add(ParsePathNode());
-                //todo
+                if (Is("FROM"))
+                {
+                    Skip("FROM");
+                    node.From.Add(ParsePathNode());
+                }
+
                 ret.Add(node);
             }
             else
@@ -211,13 +244,27 @@ public class SqlParser
         ExpressionNode lastNode = null;
         while (position < code.Length)
         {
-            if (Is(")"))
+            if (Char.IsWhiteSpace(this.code[position]))
+            {
+                SkipWhitespace();
+            }
+            else if (Is("FROM") || Is("WHERE") || Is("GROUP") || Is("LIMIT") || Is("ORDER") || Is("JOIN") || Is("LEFT") ||
+                Is("RIGHT") || Is("INNER") || Is("OUTER") || Is("ON")|| Is("AS"))
+            {
+                return lastNode;
+            }
+            else if (Is(")"))
             {
                 return lastNode;
             }
             else if (Is(","))
             {
                 return lastNode;
+            }
+            else if (Is("*"))
+            {
+                Skip("*");
+                lastNode = new WildcardNode();
             }
             else if (Is("'"))
             {
@@ -237,7 +284,7 @@ public class SqlParser
                 Skip("'");
                 lastNode = new StringLiteralNode() { Value = value };
             }
-            else if (Is("-") || char.IsDigit(code[position])||Is("."))
+            else if (Is("-") || char.IsDigit(code[position]) || Is("."))
             {
                 var isFloat = false;
                 if (lastNode != null)
@@ -270,21 +317,24 @@ public class SqlParser
                         position++;
                     }
                 }
-                if(Is("e") || Is("E"))
+
+                if (Is("e") || Is("E"))
                 {
                     isFloat = true;
                     value += "e";
                     position++;
-                    if(Is("+") || Is("-"))
+                    if (Is("+") || Is("-"))
                     {
                         value += code[position];
                         position++;
                     }
+
                     while (position < code.Length && char.IsDigit(code[position]))
                     {
                         value += code[position];
                         position++;
                     }
+
                     if (Is("."))
                     {
                         value += ".";
@@ -305,6 +355,14 @@ public class SqlParser
                 {
                     lastNode = new IntegerLiteralNode() { Value = BigInteger.Parse(value) };
                 }
+            }
+            else if (lastNode == null)
+            {
+                var pathNode = ParsePathNode();
+                lastNode = new PathExpressionNode()
+                {
+                    Values = pathNode.Values
+                };
             }
             else
             {

@@ -9,6 +9,13 @@ POST http://localhost:5142/_query
 CREATE TABLE abc.def (a TEXT, b TEXT, c INT, d FLOAT, e DATE, f DATETIME, g TIME)
 
 ###
+###
+
+POST http://localhost:5142/_query
+
+CREATE TABLE abc.a (aa TEXT)
+
+###
 
 POST http://localhost:5142/_query
 
@@ -16,10 +23,16 @@ INSERT INTO abc.def ( b, a, c, d, e, f, g) VALUES ('Hello, world!', '456', 123, 
 
 
 ###
+POST http://localhost:5142/_query
+
+INSERT INTO abc.a ( aa ) VALUES ('1')
+
+
+###
 
 POST http://localhost:5142/_query
 
-SELECT * FROM abc.def
+SELECT a FROM abc.def
 
 
 

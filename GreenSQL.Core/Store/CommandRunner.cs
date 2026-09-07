@@ -90,12 +90,12 @@ public class CommandRunner
                     var newRow = table.GetDefaultRow();
                     for (var i = 0; i < collumnMap.Length; i++)
                     {
-                       
                         newRow[collumnMap[i]] = ExecuteExpression(row[i], columnTypes[collumnMap[i]]);
                     }
+
                     table.AddRow(newRow);
                 }
-                
+
                 return new ExecutionResult();
             }
             else
@@ -106,21 +106,46 @@ public class CommandRunner
         else if (node is SelectNode sqlSelectNode)
         {
             //oversimplified
-            var tablePath=(sqlSelectNode.From.First() as PathNode);
-            var db=dbSet.GetDatabase(tablePath.Values[0]);
-            if (db == null)
+            var tables = sqlSelectNode.From.Select(tablePathNode =>
             {
-                throw new Exception($"Database {tablePath.Values[0]} does not exist");
-            }
-            var table = db.GetTable(tablePath.Values[1]);
-            if (table == null)
-            {
-                throw new Exception($"Table {tablePath.Values[1]} does not exist");
-            }
+                var tablePath = (tablePathNode as PathNode);
+                var db = dbSet.GetDatabase(tablePath.Values[0]);
+                if (db == null)
+                {
+                    throw new Exception($"Database {tablePath.Values[0]} does not exist");
+                }
 
+                var table = db.GetTable(tablePath.Values[1]);
+                if (table == null)
+                {
+                    throw new Exception($"Table {tablePath.Values[1]} does not exist");
+                }
+
+                return table;
+            }).ToList();
+            var tableColumnNames = tables.Select(table => table.ColumnNames.ToList()).ToList();
+            var tableData = tables.Select(table => table.GetAllData().ToList()).ToList();
+            var resultRows = CartesianProduct(tableData);
             return new ExecutionResult()
             {
-                Data = table.GetAllData()
+                Data = resultRows.Select(rowData =>
+                {
+                    return sqlSelectNode.Collumns.SelectMany(collumn =>
+                    {
+                        if (collumn.Expression is PathExpressionNode pathExpressionNode)
+                        {
+                            var index=tableColumnNames.Single().FindIndex(x => x == pathExpressionNode.Values.Single());
+                            return new object[] { rowData.Single()[index] };
+                        }else if (collumn.Expression is WildcardNode)
+                        {
+                            return rowData.Single();
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }).ToArray();
+                }).ToList()
             };
         }
         else
@@ -129,20 +154,45 @@ public class CommandRunner
         }
     }
 
-    private object ExecuteExpression(ExpressionNode expressionNode, DataType? expectedType=null)
+    private List<List<object[]>> CartesianProduct(List<List<object[]>> input)
     {
-        if(expressionNode is StringLiteralNode stringLiteralNode)
+        var ret = new List<List<object[]>>()
+        {
+            new List<object[]>()
+        };
+        foreach (var tableData in input)
+        {
+            var oldRet = ret;
+            ret = new List<List<object[]>>();
+            foreach (var x in oldRet)
+            {
+                foreach (var y in tableData)
+                {
+                    ret.Add(x.Concat(new List<object[]>() { y }).ToList());
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    private object ExecuteExpression(ExpressionNode expressionNode, DataType? expectedType = null)
+    {
+        if (expressionNode is StringLiteralNode stringLiteralNode)
         {
             if (expectedType == DataType.Text)
             {
                 return stringLiteralNode.Value;
-            }else if(expectedType == DataType.Date)
+            }
+            else if (expectedType == DataType.Date)
             {
                 return DateOnly.Parse(stringLiteralNode.Value);
-            }else if(expectedType == DataType.Time)
+            }
+            else if (expectedType == DataType.Time)
             {
                 return TimeOnly.Parse(stringLiteralNode.Value);
-            }else if(expectedType == DataType.DateTime)
+            }
+            else if (expectedType == DataType.DateTime)
             {
                 return DateTime.Parse(stringLiteralNode.Value);
             }
@@ -151,12 +201,13 @@ public class CommandRunner
                 throw new NotImplementedException();
             }
         }
-        else if(expressionNode is IntegerLiteralNode integerLiteralNode)
+        else if (expressionNode is IntegerLiteralNode integerLiteralNode)
         {
             if (expectedType == DataType.Integer)
             {
                 return (long)integerLiteralNode.Value;
-            }else if(expectedType == DataType.Float)
+            }
+            else if (expectedType == DataType.Float)
             {
                 return (double)integerLiteralNode.Value;
             }
@@ -165,7 +216,7 @@ public class CommandRunner
                 throw new NotImplementedException();
             }
         }
-        else if(expressionNode is FloatLiteralNode floatLiteralNode)
+        else if (expressionNode is FloatLiteralNode floatLiteralNode)
         {
             if (expectedType == DataType.Float)
             {
