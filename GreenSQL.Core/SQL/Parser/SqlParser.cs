@@ -191,8 +191,26 @@ public class SqlParser
                 }
 
                 SkipWhitespace();
-                Skip("FROM");
-                node.From.Add(ParsePathNode());
+                if (Is("FROM"))
+                {
+                    Skip("FROM");
+                    while (position < code.Length && !(Is("WHERE") || Is("GROUP") || Is("ORDER") || Is("LIMIT") ||
+                                                       Is("OFFSET") || Is(")")))
+                    {
+                        node.From.Add(ParsePathNode());
+                        SkipWhitespace();
+                        if(Is(","))
+                        {
+                            Skip(",");
+                            SkipWhitespace();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
                 //todo
                 ret.Add(node);
             }

@@ -106,27 +106,75 @@ public class CommandRunner
         else if (node is SelectNode sqlSelectNode)
         {
             //oversimplified
-            var tablePath=(sqlSelectNode.From.First() as PathNode);
-            var db=dbSet.GetDatabase(tablePath.Values[0]);
-            if (db == null)
+            var tables = sqlSelectNode.From.Select(x =>
             {
-                throw new Exception($"Database {tablePath.Values[0]} does not exist");
-            }
-            var table = db.GetTable(tablePath.Values[1]);
-            if (table == null)
-            {
-                throw new Exception($"Table {tablePath.Values[1]} does not exist");
-            }
+                var tablePath = (x as PathNode);
+                var db = dbSet.GetDatabase(tablePath.Values[0]);
+                if (db == null)
+                {
+                    throw new Exception($"Database {tablePath.Values[0]} does not exist");
+                }
+
+                var table = db.GetTable(tablePath.Values[1]);
+                if (table == null)
+                {
+                    throw new Exception($"Table {tablePath.Values[1]} does not exist");
+                }
+                return table;
+            });
+            
 
             return new ExecutionResult()
             {
-                Data = table.GetAllData()
+                Data = CartesianProduct(tables.Select(x=>x.GetAllData().ToArray()).ToArray()).Select(row=>row.SelectMany(x=>x).ToArray()).ToList()
             };
         }
         else
         {
             throw new NotImplementedException();
         }
+    }
+
+    public object[][][] CartesianProduct(object[][][] input)
+    {
+        var totalCount = 1;
+        for(var i=0; i<input.Length; i++)
+        {
+            totalCount*= input[i].Length;
+        }
+
+        var ret = new object[totalCount][][];
+        for(var r=0;r<totalCount;r++)
+        {
+            ret[r] = new object[input.Length][];
+        }
+
+        var previousCount = 1;
+        int currentCount;
+        var nextCount = totalCount;
+
+        for (var i = 0; i < input.Length; i++)
+        {
+            currentCount=input[i].Length;
+            nextCount/=currentCount;
+            //todo
+            
+            for(var p=0;p<previousCount;p++)
+            {
+                for(var c=0;c<currentCount;c++)
+                {
+                    for(var n=0;n<nextCount;n++)
+                    {
+                        var index = p * currentCount * nextCount + c * nextCount + n;
+                        ret[index][i] = input[i][c];
+                    }
+                }
+            }
+            
+            previousCount *= currentCount;
+        }
+        
+        return ret;
     }
 
     private object ExecuteExpression(ExpressionNode expressionNode, DataType? expectedType=null)

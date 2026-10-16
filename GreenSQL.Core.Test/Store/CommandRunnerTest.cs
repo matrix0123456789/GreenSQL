@@ -84,4 +84,32 @@ public class CommandRunnerTest
         Assert.That(result.Data.Last()[1], Is.EqualTo(23));
         Assert.That(result.Data.Last()[2], Is.EqualTo(123));
     }
+
+    [Test]
+    public void SelectMultipleTables()
+    {
+        var runner = new CommandRunner(new DbSet());
+        runner.ExecuteSqlCommand("CREATE DATABASE TestDB");
+        runner.ExecuteSqlCommand("CREATE TABLE TestDB.T1 (a INT)");
+        runner.ExecuteSqlCommand("CREATE TABLE TestDB.T2 (a INT)");
+        runner.ExecuteSqlCommand("CREATE TABLE TestDB.T3 (a INT)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T1 (a) VALUES (1)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T1 (a) VALUES (2)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T1 (a) VALUES (3)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T2 (a) VALUES (10)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T2 (a) VALUES (20)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T2 (a) VALUES (30)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T3 (a) VALUES (100)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T3 (a) VALUES (200)");
+        runner.ExecuteSqlCommand("INSERT INTO TestDB.T3 (a) VALUES (300)");
+        
+        var result = runner.ExecuteSqlCommand("SELECT * FROM TestDB.T1, TestDB.T2, TestDB.T3");
+        Assert.That(result.Data.Count, Is.EqualTo(27));
+        Assert.That(result.Data.ToArray()[0], Is.EquivalentTo(new object[] { 1, 10, 100 }));
+        Assert.That(result.Data.ToArray()[1], Is.EquivalentTo(new object[] { 1, 10, 200 }));
+        Assert.That(result.Data.ToArray()[2], Is.EquivalentTo(new object[] { 1, 10, 300 }));
+        Assert.That(result.Data.ToArray()[3], Is.EquivalentTo(new object[] { 1, 20, 100 }));
+        Assert.That(result.Data.ToArray()[4], Is.EquivalentTo(new object[] { 1, 20, 200 }));
+        Assert.That(result.Data.ToArray()[5], Is.EquivalentTo(new object[] { 1, 20, 300 }));
+    }
 }

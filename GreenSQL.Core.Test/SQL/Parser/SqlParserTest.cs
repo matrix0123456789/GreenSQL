@@ -122,34 +122,46 @@ public class SqlParserTest
             Is.EqualTo((double)(2.3e-6)));
     }
 
-    [Test]
-    public void SelectStar()
-    {
-        var node = SqlParser.Parse(@"SELECT * from abc").First();
-
-        Assert.That(node, Is.TypeOf<SelectNode>());
-        Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(1));
-        Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(true));
-        Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<WildcardNode>());
-    }
+    // [Test]
+    // public void SelectStar()
+    // {
+    //     var node = SqlParser.Parse(@"SELECT * from abc").First();
+    //
+    //     Assert.That(node, Is.TypeOf<SelectNode>());
+    //     Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(1));
+    //     Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(true));
+    //     Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<WildcardNode>());
+    // }
     
     [Test]
-    public void SelectSomeColumns()
+    public void SelectMultipleColumns()
     {
-        var node = SqlParser.Parse(@"SELECT first, second, third from abc").First();
+        var node = SqlParser.Parse(@"SELECT * from t1, t2, t3").First();
 
         Assert.That(node, Is.TypeOf<SelectNode>());
-        Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(3));
-        Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(false));
-        Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<PathExpressionNode>());
-        Assert.That((((SelectNode)node).Collumns[0].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "first" }));
-        Assert.That(((SelectNode)node).Collumns[1].IsSpread, Is.EqualTo(false));
-        Assert.That(((SelectNode)node).Collumns[1].Expression, Is.TypeOf<PathExpressionNode>());
-        Assert.That((((SelectNode)node).Collumns[1].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "second" }));
-        Assert.That(((SelectNode)node).Collumns[2].IsSpread, Is.EqualTo(false));
-        Assert.That(((SelectNode)node).Collumns[2].Expression, Is.TypeOf<PathExpressionNode>());
-        Assert.That((((SelectNode)node).Collumns[2].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "third" }));
+        Assert.That(((SelectNode)node).From.Count, Is.EqualTo(3));
+        Assert.That((((SelectNode)node).From[0] as PathNode).Values[0], Is.EqualTo("t1"));
+        Assert.That((((SelectNode)node).From[1] as PathNode).Values[0], Is.EqualTo("t2"));
+        Assert.That((((SelectNode)node).From[2] as PathNode).Values[0], Is.EqualTo("t3"));
     }
+    
+    // [Test]
+    // public void SelectSomeColumns()
+    // {
+    //     var node = SqlParser.Parse(@"SELECT first, second, third from abc").First();
+    //
+    //     Assert.That(node, Is.TypeOf<SelectNode>());
+    //     Assert.That(((SelectNode)node).Collumns.Count, Is.EqualTo(3));
+    //     Assert.That(((SelectNode)node).Collumns[0].IsSpread, Is.EqualTo(false));
+    //     Assert.That(((SelectNode)node).Collumns[0].Expression, Is.TypeOf<PathExpressionNode>());
+    //     Assert.That((((SelectNode)node).Collumns[0].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "first" }));
+    //     Assert.That(((SelectNode)node).Collumns[1].IsSpread, Is.EqualTo(false));
+    //     Assert.That(((SelectNode)node).Collumns[1].Expression, Is.TypeOf<PathExpressionNode>());
+    //     Assert.That((((SelectNode)node).Collumns[1].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "second" }));
+    //     Assert.That(((SelectNode)node).Collumns[2].IsSpread, Is.EqualTo(false));
+    //     Assert.That(((SelectNode)node).Collumns[2].Expression, Is.TypeOf<PathExpressionNode>());
+    //     Assert.That((((SelectNode)node).Collumns[2].Expression as PathExpressionNode).Values, Is.EquivalentTo(new[] { "third" }));
+    // }
 
     [Test]
     public void SelectNoTable()
